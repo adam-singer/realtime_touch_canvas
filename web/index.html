@@ -1,0 +1,54 @@
+<html>
+  <head>
+    <meta charset="utf-8">
+    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+    <script type="text/javascript" src="https://apis.google.com/js/api.js"></script>
+    <title>Dart Multi Touch Canvas</title>
+	 <meta name="apple-mobile-web-app- status-bar-style" content="black-translucent" />
+	 <style type='text/css'>
+		div {position:absolute;left:0px;top:35px;width:100%;height: 100%;}
+	 </style>
+  </head>
+  <body>
+    <button id="createNewCanvasButton">New Canvas</button>
+    <button id="openButton">Open</button>
+    <input id="fileIdInput"></input>
+    <button id="clearButton">Clear</button>
+    <button id="shareButton">Share</button>
+    <button id="openDriveButton">Drive</button>
+    <script type="text/javascript">
+
+    // Use the Google Loader script to load the google.picker script.
+    //google.setOnLoadCallback(createPicker);
+    google.load('picker', '1');
+
+    var picker = null;
+    // Create and render a Picker object for searching images.
+    function createPicker() {
+        picker = new google.picker.PickerBuilder().
+            addView(google.picker.ViewId.DOCS).
+            setCallback(pickerCallback).
+            build();
+        picker.setVisible(true);
+    }
+
+    // A simple callback implementation.
+    function pickerCallback(data) {
+      var id = 'nothing';
+      if (data[google.picker.Response.ACTION] == google.picker.Action.PICKED) {
+        var doc = data[google.picker.Response.DOCUMENTS][0];
+        id = doc[google.picker.Document.ID];
+      }
+      //var message = 'You picked: ' + url;
+      //console.log(message);
+      //document.getElementById('result').innerHTML = message;
+      document.getElementById('fileIdInput').value = id;
+      picker.setVisible(false);
+    }
+    </script>
+    <div id="div"></div>
+    <script type="application/dart" src="realtime_touch_canvas.dart"></script>
+    <script src="dart.js"></script>
+    <script src="dart_interop.js"></script>
+  </body>
+</html>
