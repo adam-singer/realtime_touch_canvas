@@ -1,0 +1,8 @@
+name:  dart_realtime_multitouch_canvas_example
+description:  A realtie multi touch canvas using google realtime api
+
+dependencies:
+  js: 0.0.18
+  logging: 0.4.2+1
+  unittest: 0.4.2
+  browser: 0.4.2
