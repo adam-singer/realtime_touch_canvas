@@ -57,6 +57,8 @@ class MultiTouchModel {
     if (newModel) {
       _createNewModel(model);
     }
+    
+    
   }
 
   void onFileLoaded(js.Proxy doc) {
