@@ -118,32 +118,47 @@ void main() {
   ButtonElement newCanvasButton = query("#createNewCanvasButton");
   ButtonElement openButton = query("#openButton");
   ButtonElement clearButton = query("#clearButton");
-  ButtonElement shareButton = query("#shareButton");
-  ButtonElement driveButton = query("#openDriveButton");
   InputElement fileIdInput = query("#fileIdInput");
+  AnchorElement returnUrl = query("#url");
   
-  driveButton.onClick.listen((MouseEvent event) {
-    js.scoped(() {
-      js.context.createPicker();
-    });
-  });
-  
-  shareButton.onClick.listen((MouseEvent event) {
-    if (model != null) {
-      js.scoped(() {
-        var shareClient = new js.Proxy(gapi.drive.share.ShareClient, '299615367852.apps.googleusercontent.com');
-        var fileId = fileIdInput.value;
-        shareClient.setItemIds(js.array([shareClient]));
-        shareClient.showSettingsDialog();
-      });
-    }
-  });
+  disableInputs() {
+    document.body.children.removeAll([openButton, newCanvasButton, fileIdInput]);
+    clearButton.style.visibility = "visible";
+
+  };
   
   clearButton.onClick.listen((MouseEvent event) {
     if (model != null) {
       model.clear();
     }
   });
+  
+  if (params.containsKey("fileId")) {
+    logger.fine("opening from params fileId = ${params['fileId']}");
+    
+    var fileId = params['fileId'];
+
+    if (model != null) {
+      model.close();
+    }
+
+    if (rtl != null) {
+      model = new MultiTouchModel(newModel: false);
+      loadRealTimeFile(fileId, model.onFileLoaded, model.initializeModel);
+    } else {
+      rtl = new RealTimeLoader(clientId: '299615367852.apps.googleusercontent.com', apiKey: 'AIzaSyC8UF7N5I5b42FFU1ieDumfZ2MFdCHY_M8');
+      rtl.start().then((bool isComplete) {
+        logger.fine("isComplete = ${isComplete}");
+        model = new MultiTouchModel(newModel: false);
+        loadRealTimeFile(fileId, model.onFileLoaded, model.initializeModel);
+      });
+    }
+    
+    returnUrl.href = "${window.location.toString()}?fileId=${fileId}";
+    returnUrl.text = fileId;
+    
+    disableInputs();
+  }
   
   openButton.onClick.listen((MouseEvent event) {
     logger.fine("openButton ${fileIdInput.value}");
@@ -169,6 +184,11 @@ void main() {
         loadRealTimeFile(fileId, model.onFileLoaded, model.initializeModel);
       });
     }
+    
+    returnUrl.href = "${window.location.toString()}?fileId=${fileId}";
+    returnUrl.text = fileId;
+    
+    disableInputs();
   });
 
   newCanvasButton.onClick.listen((MouseEvent event) {
@@ -187,6 +207,11 @@ void main() {
 
         model = new MultiTouchModel(newModel: true);
         loadRealTimeFile(fileId, model.onFileLoaded, model.initializeModel);
+        
+        returnUrl.href = "${window.location.toString()}?fileId=${fileId}";
+        returnUrl.text = fileId;
+        
+        disableInputs();
       });
     });
   });
