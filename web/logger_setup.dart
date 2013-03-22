@@ -1,7 +1,7 @@
 part of realtime_touch_canvas;
 
 _setupLogger() {
-  Logger.root.level = Level.ALL;
+  Logger.root.level = Level.OFF;
   Logger.root.onRecord.listen((LogRecord r) {
     StringBuffer sb = new StringBuffer();
     sb
